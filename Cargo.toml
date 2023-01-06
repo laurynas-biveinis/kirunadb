@@ -1,7 +1,7 @@
 [package]
 name = "kirunadb"
 version = "0.0.1"
-licence = "Apache-2.0"
+license = "Apache-2.0"
 description = "Do not use yet. Reserving the crate name."
 homepage = "https://github.com/laurynas-biveinis/kirunadb"
 repository = "https://github.com/laurynas-biveinis/kirunadb"
