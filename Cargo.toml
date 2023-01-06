@@ -1,0 +1,19 @@
+[package]
+name = "kirunadb"
+version = "0.0.1"
+licence = "Apache-2.0"
+description = "Do not use yet. Reserving the crate name."
+homepage = "https://github.com/laurynas-biveinis/kirunadb"
+repository = "https://github.com/laurynas-biveinis/kirunadb"
+edition = "2021"
+
+[lib]
+crate-type=["staticlib", "cdylib"]
+
+[dependencies]
+tempfile = "3.3.0"
+cap-std = "1.0.1"
+cxx = "1.0"
+
+[build-dependencies]
+cxx-build = "1.0"
