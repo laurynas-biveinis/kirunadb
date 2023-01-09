@@ -20,6 +20,7 @@ impl TransactionChangeNewNode {
         TransactionChangeNewNode { descriptor_node_id }
     }
 
+    #[inline]
     pub fn get_descriptor_node_id(&self) -> u64 {
         self.descriptor_node_id
     }
@@ -73,6 +74,7 @@ impl TransactionManager {
         }
     }
 
+    #[inline]
     pub fn assign_next_id(&mut self) -> u64 {
         self.next_id.fetch_add(1, Ordering::Relaxed)
     }

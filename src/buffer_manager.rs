@@ -15,6 +15,7 @@ impl BufferManager {
         }
     }
 
+    #[inline]
     pub fn allocate_new_node_id(&mut self) -> u64 {
         self.next_node_id
             .fetch_add(1, std::sync::atomic::Ordering::Relaxed)

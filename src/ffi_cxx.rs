@@ -35,6 +35,7 @@ pub mod interface {
     }
 }
 
+#[inline]
 pub fn drop_transaction(transaction: Box<Transaction>) {
     std::mem::drop(transaction);
 }
@@ -46,6 +47,7 @@ pub fn open(path: &str) -> Result<Box<Db>, io::Error> {
     Ok(Box::new(db))
 }
 
+#[inline]
 pub fn close(db: Box<Db>) {
     std::mem::drop(db);
 }
