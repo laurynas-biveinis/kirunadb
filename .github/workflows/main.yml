@@ -44,3 +44,4 @@ jobs:
         -D clippy::string_to_string -D clippy::try_err \
         -D clippy::unneeded_field_pattern -D clippy::unwrap_used \
         -D clippy::use_debug -D clippy::verbose_file_reads
+      if: runner.os != 'Windows'
