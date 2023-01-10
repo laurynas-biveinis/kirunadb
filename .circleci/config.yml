@@ -2,8 +2,8 @@ version: 2.1
 
 jobs:
   build:
-    docker:
-      - image: cimg/rust:1.65.0
+    machine:
+      image: ubuntu-2004:current
     resource_class: arm.medium
     steps:
       - checkout
