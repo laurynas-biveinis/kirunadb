@@ -1,0 +1,11 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/rust:1.65.0
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run: cargo build --verbose
+      - run: cargo test --verbose
