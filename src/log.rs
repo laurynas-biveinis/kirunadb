@@ -23,7 +23,7 @@ impl Log {
     }
 
     pub fn append(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
-        // TODO(laurynas): this is throwaway code anyway
+        // TODO(laurynas): this is throwaway code anyway. Use serde (C-SERDE)
         assert!(self.file.stream_position()? == 0);
         for change in changes {
             match change {

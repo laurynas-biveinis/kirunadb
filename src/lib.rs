@@ -32,7 +32,7 @@ impl Db {
     const VERSION_FILE_NAME: &str = "VERSION";
     const LOG_FILE_NAME: &str = "LOG";
 
-    // TODO(laurynas): custom error for "DB already exists at this path", etc.
+    // TODO(laurynas): custom error for "DB already exists at this path", etc. (C-GOOD-ERR)
     /// # Errors
     /// Will return `io::Error` if it encounters any.
     pub fn open(path: &Path) -> Result<Db, io::Error> {
