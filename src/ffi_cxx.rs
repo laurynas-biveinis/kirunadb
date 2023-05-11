@@ -7,9 +7,10 @@ use std::path::Path;
 #[cxx::bridge(namespace = "kirunadb")]
 #[allow(
     clippy::items_after_statements,
-    clippy::let_underscore_drop,
+    clippy::let_underscore_untyped,
     clippy::trait_duplication_in_bounds,
-    clippy::used_underscore_binding
+    clippy::used_underscore_binding,
+    let_underscore_drop,
 )]
 pub mod interface {
     extern "Rust" {
