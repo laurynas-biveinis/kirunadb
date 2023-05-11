@@ -9,8 +9,8 @@ pub struct BufferManager {
 impl BufferManager {
     pub const NULL_NODE_ID: u64 = 0;
 
-    // TODO(laurynas): pass size
-    pub fn init() -> BufferManager {
+    // TODO(laurynas): pass size. Until then, this is a Default type.
+    pub fn new() -> BufferManager {
         BufferManager {
             next_node_id: AtomicU64::new(0),
         }
@@ -20,5 +20,11 @@ impl BufferManager {
     pub fn allocate_new_node_id(&mut self) -> u64 {
         self.next_node_id
             .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+    }
+}
+
+impl Default for BufferManager {
+    fn default() -> Self {
+        BufferManager::new()
     }
 }

@@ -76,7 +76,7 @@ impl Db {
             }?;
         }
         let log = Log::open(&dir_handle, Db::LOG_FILE_NAME, is_dir_empty)?;
-        let buffer_manager = BufferManager::init();
+        let buffer_manager = BufferManager::new();
         let transaction_manager = TransactionManager::new(buffer_manager, log);
         Ok(Db {
             _dir_handle: dir_handle,
