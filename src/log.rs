@@ -30,7 +30,7 @@ impl Log {
                     let change_type_id = Self::change_type_id(change);
                     self.file.write_all(&change_type_id.to_ne_bytes())?;
                     assert!(self.file.stream_position()? == 1);
-                    let node_id = new_art_descriptor.get_descriptor_node_id();
+                    let node_id = new_art_descriptor.descriptor_node_id();
                     self.file.write_all(&node_id.to_ne_bytes())?;
                     assert!(self.file.stream_position()? == 9);
                 }

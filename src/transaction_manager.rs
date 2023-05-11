@@ -22,7 +22,7 @@ impl TransactionChangeNewNode {
     }
 
     #[inline]
-    pub fn get_descriptor_node_id(&self) -> u64 {
+    pub fn descriptor_node_id(&self) -> u64 {
         self.descriptor_node_id
     }
 }
@@ -49,7 +49,7 @@ impl Transaction {
     // TODO(laurynas): Option a better fit? But cxx.rs not there yet.
     pub fn new_art_descriptor_node(&mut self) -> u64 {
         let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
-        let new_node_id = new_node_trx_change.get_descriptor_node_id();
+        let new_node_id = new_node_trx_change.descriptor_node_id();
         let trx_change = TransactionChange::NewArtDescriptor(new_node_trx_change);
         self.changes.push(trx_change);
         new_node_id
