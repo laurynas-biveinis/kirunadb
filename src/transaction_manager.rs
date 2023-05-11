@@ -55,7 +55,7 @@ impl Transaction {
         new_node_id
     }
 
-    pub fn get_id(&self) -> u64 {
+    pub fn id(&self) -> u64 {
         self.id
     }
 }

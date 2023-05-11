@@ -15,7 +15,7 @@ pub mod interface {
     extern "Rust" {
         type Transaction;
 
-        pub fn get_id(self: &Transaction) -> u64;
+        pub fn id(self: &Transaction) -> u64;
 
         pub fn new_art_descriptor_node(self: &mut Transaction) -> u64;
 
