@@ -8,10 +8,12 @@ use crate::buffer_manager::BufferManager;
 use crate::log::Log;
 
 #[non_exhaustive]
+#[derive(Debug)]
 pub enum TransactionChange {
     NewArtDescriptor(TransactionChangeNewNode),
 }
 
+#[derive(Debug)]
 pub struct TransactionChangeNewNode {
     descriptor_node_id: u64,
 }
@@ -27,6 +29,7 @@ impl TransactionChangeNewNode {
     }
 }
 
+#[derive(Debug)]
 pub struct Transaction {
     manager: Rc<RefCell<TransactionManager>>,
     id: u64,
@@ -60,6 +63,7 @@ impl Transaction {
     }
 }
 
+#[derive(Debug)]
 pub struct TransactionManager {
     buffer_manager: BufferManager,
     log: Log,

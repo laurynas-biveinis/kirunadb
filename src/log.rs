@@ -3,6 +3,7 @@ use crate::transaction_manager::TransactionChange;
 use cap_std::fs::{Dir, File, OpenOptions};
 use std::io::{self, Seek, Write};
 
+#[derive(Debug)]
 pub struct Log {
     file: File,
 }

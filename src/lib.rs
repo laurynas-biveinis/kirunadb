@@ -22,6 +22,7 @@ use transaction_manager::TransactionManager;
 
 // Do the simplest thing that works. Later generalize to being able to contain
 // multiple ARTs, with different key types.
+#[derive(Debug)]
 pub struct Db {
     _dir_handle: Dir,
     transaction_manager: Rc<RefCell<TransactionManager>>,
