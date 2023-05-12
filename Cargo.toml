@@ -15,8 +15,8 @@ edition = "2021"
 crate-type=["staticlib", "cdylib"]
 
 [dependencies]
-tempfile = "3.3.0"
-cap-std = "1.0.1"
+tempfile = "3.5"
+cap-std = "1.0"
 cxx = "1.0"
 
 [build-dependencies]
