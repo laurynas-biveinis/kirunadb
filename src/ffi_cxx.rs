@@ -32,6 +32,7 @@ pub mod interface {
 
         pub fn close(db: Box<Db>);
 
+        #[allow(clippy::unnecesary_box_returns)]
         unsafe fn begin_transaction(self: &mut Db) -> Box<Transaction>;
     }
 }
