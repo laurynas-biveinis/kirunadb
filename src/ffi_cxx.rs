@@ -10,7 +10,7 @@ use std::path::Path;
     clippy::let_underscore_untyped,
     clippy::trait_duplication_in_bounds,
     clippy::used_underscore_binding,
-    let_underscore_drop,
+    let_underscore_drop
 )]
 pub mod interface {
     extern "Rust" {
