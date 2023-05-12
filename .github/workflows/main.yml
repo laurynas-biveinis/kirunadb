@@ -39,6 +39,7 @@ jobs:
 
       - name: Run Clippy (default)
         run: cargo clippy --all-targets --all-features
+        if: ${{ matrix.toolchain == 'stable' }}
 
       - name: Run Clippy (restrictions)
         run: |
@@ -56,4 +57,4 @@ jobs:
               -D clippy::try_err -D clippy::unneeded_field_pattern \
               -D clippy::unwrap_used -D clippy::use_debug \
               -D clippy::verbose_file_reads
-        if: ${{ runner.os != 'Windows' && matrix.toolchain == 'stable' }}
+        if: ${{ matrix.toolchain == 'stable' }}
