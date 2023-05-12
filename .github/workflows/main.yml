@@ -19,8 +19,6 @@ jobs:
           - macos-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
-    env:
-      TOOLCHAIN: ${{matrix.toolchain}}
     steps:
       - uses: actions/checkout@v3
 
@@ -57,4 +55,4 @@ jobs:
               -D clippy::try_err -D clippy::unneeded_field_pattern \
               -D clippy::unwrap_used -D clippy::use_debug \
               -D clippy::verbose_file_reads
-        if: ${{ matrix.toolchain == 'stable' }}
+        if: ${{ runner.os != 'Windows' && matrix.toolchain == 'stable' }}
