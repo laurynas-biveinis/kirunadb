@@ -7,7 +7,6 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use crate::buffer_manager::BufferManager;
 use crate::log::Log;
 
-#[non_exhaustive]
 #[derive(Debug)]
 pub enum TransactionChange {
     NewArtDescriptor(TransactionChangeNewNode),
