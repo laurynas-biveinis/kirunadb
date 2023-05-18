@@ -18,6 +18,8 @@ crate-type=["staticlib", "cdylib"]
 tempfile = "3.5"
 cap-std = "1.0"
 cxx = "1.0"
+num_enum = "0.6"
+thiserror = "1.0.40"
 
 [build-dependencies]
 cxx-build = "1.0"

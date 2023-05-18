@@ -17,8 +17,23 @@ use std::io::ErrorKind;
 use std::path::Path;
 use std::path::PathBuf;
 use std::rc::Rc;
+use thiserror::Error;
 use transaction_manager::Transaction;
 use transaction_manager::TransactionManager;
+
+#[derive(Error, Debug)]
+pub enum DbError {
+    #[error("I/O Error")]
+    Io(#[from] io::Error),
+    #[error("Corruption: incorrect log record type {bad_type}")]
+    BadLogRecordType {
+        bad_type: u8,
+    },
+    #[error("Corruption: logged multiple allocations for the same node ID {node_id}")]
+    LoggedMultipleNodeIdAllocations {
+        node_id: u64,
+    },
+}
 
 // Do the simplest thing that works. Later generalize to being able to contain
 // multiple ARTs, with different key types.
@@ -34,8 +49,8 @@ impl Db {
 
     // TODO(laurynas): custom error for "DB already exists at this path", etc. (C-GOOD-ERR)
     /// # Errors
-    /// Will return `io::Error` if it encounters any.
-    pub fn open(path: &Path) -> Result<Db, io::Error> {
+    /// Will return `DbError` if it encounters any.
+    pub fn open(path: &Path) -> Result<Db, DbError> {
         let absolute_path: PathBuf = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -55,11 +70,11 @@ impl Db {
                         parent_dir_handle.create_dir(dir)?;
                         parent_dir_handle.open_dir(dir)?
                     } else {
-                        return Err(error);
+                        return Err(DbError::Io(error));
                     }
                 }
                 _ => {
-                    return Err(error);
+                    return Err(DbError::Io(error));
                 }
             },
         };
@@ -76,7 +91,7 @@ impl Db {
             }?;
         }
         let log = Log::open(&dir_handle, Db::LOG_FILE_NAME, is_dir_empty)?;
-        let buffer_manager = BufferManager::new();
+        let buffer_manager = BufferManager::new(log.max_logged_node_id() + 1);
         let transaction_manager = TransactionManager::new(buffer_manager, log);
         Ok(Db {
             _dir_handle: dir_handle,

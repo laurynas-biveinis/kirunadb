@@ -1,7 +1,6 @@
 // Copyright (C) 2022-2023 Laurynas Biveinis
 use crate::transaction_manager::Transaction;
-use crate::Db;
-use std::io;
+use crate::{Db, DbError};
 use std::path::Path;
 
 #[cxx::bridge(namespace = "kirunadb")]
@@ -42,7 +41,7 @@ pub fn drop_transaction(transaction: Box<Transaction>) {
 }
 
 // TODO(laurynas): C++17 std::path?
-pub fn open(path: &str) -> Result<Box<Db>, io::Error> {
+pub fn open(path: &str) -> Result<Box<Db>, DbError> {
     let path = Path::new(path);
     let db = Db::open(path)?;
     Ok(Box::new(db))

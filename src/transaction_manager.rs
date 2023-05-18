@@ -9,22 +9,22 @@ use crate::log::Log;
 
 #[derive(Debug)]
 pub enum TransactionChange {
-    NewArtDescriptor(TransactionChangeNewNode),
+    NewNode(TransactionChangeNewNode),
 }
 
 #[derive(Debug)]
 pub struct TransactionChangeNewNode {
-    descriptor_node_id: u64,
+    node_id: u64,
 }
 
 impl TransactionChangeNewNode {
-    fn new(descriptor_node_id: u64) -> TransactionChangeNewNode {
-        TransactionChangeNewNode { descriptor_node_id }
+    fn new(node_id: u64) -> TransactionChangeNewNode {
+        TransactionChangeNewNode { node_id }
     }
 
     #[inline]
-    pub fn descriptor_node_id(&self) -> u64 {
-        self.descriptor_node_id
+    pub fn node_id(&self) -> u64 {
+        self.node_id
     }
 }
 
@@ -51,8 +51,8 @@ impl Transaction {
     // TODO(laurynas): Option a better fit? But cxx.rs not there yet.
     pub fn new_art_descriptor_node(&mut self) -> u64 {
         let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
-        let new_node_id = new_node_trx_change.descriptor_node_id();
-        let trx_change = TransactionChange::NewArtDescriptor(new_node_trx_change);
+        let new_node_id = new_node_trx_change.node_id();
+        let trx_change = TransactionChange::NewNode(new_node_trx_change);
         self.changes.push(trx_change);
         new_node_id
     }
