@@ -26,13 +26,9 @@ pub enum DbError {
     #[error("I/O Error")]
     Io(#[from] io::Error),
     #[error("Corruption: incorrect log record type {bad_type}")]
-    BadLogRecordType {
-        bad_type: u8,
-    },
+    BadLogRecordType { bad_type: u8 },
     #[error("Corruption: logged multiple allocations for the same node ID {node_id}")]
-    LoggedMultipleNodeIdAllocations {
-        node_id: u64,
-    },
+    LoggedMultipleNodeIdAllocations { node_id: u64 },
 }
 
 // Do the simplest thing that works. Later generalize to being able to contain
