@@ -29,7 +29,7 @@ jobs:
       - name: Generate lcov report
         run: |
           grcov . --binary-path ./target/debug -s . -t lcov --branch \
-              --ignore-not-existing -o ./lcov.info
+              --ignore src/ffi_cxx.rs --ignore-not-existing -o ./lcov.info
 
       - uses: codecov/codecov-action@v2
         with:
