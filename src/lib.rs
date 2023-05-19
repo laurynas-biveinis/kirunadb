@@ -112,6 +112,12 @@ mod tests {
         TempDir::new().expect("Creating a temp dir must succeed")
     }
 
+    fn make_path_read_only(path: &Path) {
+        let mut path_permissions = path.metadata().unwrap().permissions();
+        path_permissions.set_readonly(true);
+        std::fs::set_permissions(path, path_permissions).unwrap();
+    }
+
     #[test]
     fn create_db_in_existing_empty_dir() {
         let temp_dir = get_temp_dir();
@@ -151,20 +157,17 @@ mod tests {
     fn try_open_db_inaccessible_path() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        let mut path_permissions = path.metadata().unwrap().permissions();
-        path_permissions.set_readonly(true);
-        std::fs::set_permissions(path, path_permissions).unwrap();
+        make_path_read_only(path);
         let db = Db::open(path);
-        assert!(db.is_err());
+    assert!(db.is_err());
     }
 
     #[test]
+    #[cfg_attr(target_os = "windows", ignore)]
     fn try_create_db_inaccessible_path() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        let mut path_permissions = path.metadata().unwrap().permissions();
-        path_permissions.set_readonly(true);
-        std::fs::set_permissions(path, path_permissions).unwrap();
+        make_path_read_only(path);
         let nonexisting_path = path.join("nonexistingdir");
         let db = Db::open(&nonexisting_path);
         assert!(db.is_err());
