@@ -169,5 +169,21 @@ mod tests {
         }
     }
 
+    #[test]
+    fn try_open_db_missing_log() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        {
+            let created_db = Db::open(path);
+            assert!(created_db.is_ok());
+        }
+        let version_path = path.join("LOG");
+        fs::remove_file(version_path).expect("Deleting LOG must succeed");
+        {
+            let db = Db::open(path);
+            assert!(db.is_err());
+        }
+    }
+
     // TODO(laurynas): missing VERSION/LOG tests
 }
