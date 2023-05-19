@@ -1,0 +1,32 @@
+---
+name: coverage
+
+on: [push]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test_coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: rustup update
+
+      - run: rustup component add llvm-tools
+
+      - run: cargo install grcov
+
+      - run: RUSTFLAGS="-Cinstrument-coverage" cargo build
+
+      - run: LLVM_PROFILE_FILE="kirunadb-%p-%m.profraw" cargo test
+
+      - run: |
+          grcov . --binary-path ./target/debug -s . -t lcov --branch \
+              --ignore-not-existing -o ./lcov.info
+
+      - uses: codecov/codecov-action@v2
+        with:
+          files: ./lcov.info
