@@ -31,8 +31,13 @@ pub mod interface {
 
         pub fn close(db: Box<Db>);
 
-        unsafe fn begin_transaction(self: &mut Db) -> Box<Transaction>;
+        fn begin_transaction(db: &mut Db) -> Box<Transaction>;
     }
+}
+
+pub fn begin_transaction(db: &mut Db) -> Box<Transaction> {
+    let transaction = db.begin_transaction();
+    Box::new(transaction)
 }
 
 #[inline]
