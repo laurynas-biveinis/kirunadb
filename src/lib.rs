@@ -130,6 +130,16 @@ mod tests {
     }
 
     #[test]
+    fn create_db_relative_path_arg() {
+        let temp_dir = get_temp_dir();
+        let saved_cwd = std::env::current_dir().unwrap();
+        std::env::set_current_dir(temp_dir.path()).unwrap();
+        let db = Db::open(Path::new("relative_under_temp"));
+        assert!(db.is_ok());
+        std::env::set_current_dir(saved_cwd).unwrap();
+    }
+
+    #[test]
     fn try_open_db_nonexisting_path() {
         let non_existing_path = Path::new("/non/ex/ist/ing/p/ath");
         let db = Db::open(non_existing_path);
