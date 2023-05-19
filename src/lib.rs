@@ -159,7 +159,7 @@ mod tests {
         let path = temp_dir.path();
         make_path_read_only(path);
         let db = Db::open(path);
-    assert!(db.is_err());
+        assert!(db.is_err());
     }
 
     #[test]
