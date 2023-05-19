@@ -185,5 +185,14 @@ mod tests {
         }
     }
 
+    #[test]
+    fn begin_transaction() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let db = Db::open(path);
+        assert!(db.is_ok());
+        let _transaction = db.unwrap().begin_transaction();
+    }
+
     // TODO(laurynas): missing VERSION/LOG tests
 }
