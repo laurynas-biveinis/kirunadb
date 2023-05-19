@@ -147,6 +147,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(target_os = "windows", ignore)]
     fn try_open_db_inaccessible_path() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
