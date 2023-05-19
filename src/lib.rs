@@ -97,10 +97,7 @@ impl Db {
 
     pub fn begin_transaction(&mut self) -> Transaction {
         let new_transaction_id = self.transaction_manager.borrow_mut().assign_next_id();
-        Transaction::new(
-            &self.transaction_manager,
-            new_transaction_id,
-        )
+        Transaction::new(&self.transaction_manager, new_transaction_id)
     }
 }
 
