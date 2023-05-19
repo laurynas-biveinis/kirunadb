@@ -147,6 +147,17 @@ mod tests {
     }
 
     #[test]
+    fn try_open_db_inaccessible_path() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let mut path_permissions = path.metadata().unwrap().permissions();
+        path_permissions.set_readonly(true);
+        std::fs::set_permissions(path, path_permissions).unwrap();
+        let db = Db::open(path);
+        assert!(db.is_err());
+    }
+
+    #[test]
     fn open_created_db() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
