@@ -15,17 +15,19 @@ jobs:
 
       - run: rustup update
 
-      - run: rustup component add llvm-tools
+      - run: rustup component add llvm-tools-preview
 
       - run: cargo install grcov
 
-      - run: |
+      - name: Build and test for coverage
+        run: |
           export CARGO_INCREMENTAL=0
           export RUSTFLAGS="-Cinstrument-coverage"
           export LLVM_PROFILE_FILE="kirunadb-%p-%m.profraw"
           cargo test
 
-      - run: |
+      - name: Generate lcov report
+        run: |
           grcov . --binary-path ./target/debug -s . -t lcov --branch \
               --ignore-not-existing -o ./lcov.info
 
