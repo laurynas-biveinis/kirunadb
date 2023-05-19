@@ -19,9 +19,13 @@ jobs:
 
       - run: cargo install grcov
 
-      - run: RUSTFLAGS="-Cinstrument-coverage" cargo build
+      - run: |
+          export RUSTFLAGS="-Cinstrument-coverage"
+          cargo build
 
-      - run: LLVM_PROFILE_FILE="kirunadb-%p-%m.profraw" cargo test
+      - run: |
+          export LLVM_PROFILE_FILE="kirunadb-%p-%m.profraw"
+          cargo test
 
       - run: |
           grcov . --binary-path ./target/debug -s . -t lcov --branch \
