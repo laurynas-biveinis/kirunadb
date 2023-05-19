@@ -20,10 +20,8 @@ jobs:
       - run: cargo install grcov
 
       - run: |
+          export CARGO_INCREMENTAL=0
           export RUSTFLAGS="-Cinstrument-coverage"
-          cargo build
-
-      - run: |
           export LLVM_PROFILE_FILE="kirunadb-%p-%m.profraw"
           cargo test
 
