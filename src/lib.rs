@@ -228,5 +228,17 @@ mod tests {
         let _transaction = db.unwrap().begin_transaction();
     }
 
+    #[test]
+    fn transaction_new_node() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let db = Db::open(path);
+        assert!(db.is_ok());
+        let mut transaction = db.unwrap().begin_transaction();
+        let _new_node_id = transaction.new_art_descriptor_node();
+        let commit_result = transaction.commit();
+        assert!(commit_result.is_ok());
+    }
+
     // TODO(laurynas): missing VERSION/LOG tests
 }
