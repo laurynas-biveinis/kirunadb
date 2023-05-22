@@ -30,7 +30,7 @@ jobs:
         run: |
           grcov . --binary-path ./target/debug -s . -t lcov --branch \
               --ignore src/ffi_cxx.rs --ignore-not-existing -o ./lcov.info \
-              --excl-start "// COV_EXCL_START" --excl-stop "// COV_EXCL_STOP"
+              --excl-line "// COV_EXCL_LINE"
 
       - uses: codecov/codecov-action@v2
         with:

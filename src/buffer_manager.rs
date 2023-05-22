@@ -1,9 +1,7 @@
 // Copyright (C) 2022-2023 Laurynas Biveinis
 use std::sync::atomic::AtomicU64;
 
-// COV_EXCL_START
-#[derive(Debug)]
-// COV_EXCL_STOP
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct BufferManager {
     next_node_id: AtomicU64,
 }

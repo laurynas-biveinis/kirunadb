@@ -21,7 +21,7 @@ use thiserror::Error;
 use transaction_manager::Transaction;
 use transaction_manager::TransactionManager;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug)] // COV_EXCL_LINE
 pub enum DbError {
     #[error("I/O Error")]
     Io(#[from] io::Error),
@@ -33,7 +33,7 @@ pub enum DbError {
 
 // Do the simplest thing that works. Later generalize to being able to contain
 // multiple ARTs, with different key types.
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct Db {
     _dir_handle: Dir,
     transaction_manager: Rc<RefCell<TransactionManager>>,
