@@ -62,7 +62,7 @@ impl Transaction {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct TransactionManager {
     buffer_manager: BufferManager,
     log: Log,
