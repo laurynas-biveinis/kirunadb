@@ -223,22 +223,36 @@ mod tests {
     fn begin_transaction() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        let db = Db::open(path);
-        assert!(db.is_ok());
-        let _transaction = db.unwrap().begin_transaction();
+        let mut db = Db::open(path).unwrap();
+        let _transaction = db.begin_transaction();
     }
 
     #[test]
     fn transaction_new_node() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        let db = Db::open(path);
-        assert!(db.is_ok());
-        let mut transaction = db.unwrap().begin_transaction();
+        let mut db = Db::open(path).unwrap();
+        let mut transaction = db.begin_transaction();
         let _new_node_id = transaction.new_art_descriptor_node();
         let commit_result = transaction.commit();
         assert!(commit_result.is_ok());
     }
 
-    // TODO(laurynas): missing VERSION/LOG tests
+    #[test]
+    fn transaction_two_new_nodes() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let mut db = Db::open(path).unwrap();
+        let mut t1 = db.begin_transaction();
+        let t1_new_node_id = t1.new_art_descriptor_node();
+        let t1_commit_result = t1.commit();
+        assert!(t1_commit_result.is_ok());
+        let mut t2 = db.begin_transaction();
+        let t2_new_node_id  = t2.new_art_descriptor_node();
+        let t2_commit_result = t2.commit();
+        assert!(t2_commit_result.is_ok());
+        assert_ne!(t1_new_node_id, t2_new_node_id);
+    }
+
+        // TODO(laurynas): missing VERSION/LOG tests
 }

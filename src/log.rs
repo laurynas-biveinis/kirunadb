@@ -2,7 +2,7 @@
 use crate::{transaction_manager::TransactionChange, DbError};
 use cap_std::fs::{Dir, File, OpenOptions};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
-use std::io::{self, Read, Seek, Write};
+use std::io::{self, Read, Write};
 
 #[derive(Debug)] // COV_EXCL_LINE
 pub struct Log {
@@ -77,16 +77,13 @@ impl Log {
 
     pub fn append(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
         // TODO(laurynas): this is throwaway code anyway. Use serde (C-SERDE)
-        assert!(self.file.stream_position()? == 0);
         for change in changes {
             let change_type_id: u8 = ChangeId::new(change).into();
             match change {
                 TransactionChange::NewNode(new_art_descriptor) => {
                     self.file.write_all(&change_type_id.to_ne_bytes())?;
-                    assert!(self.file.stream_position()? == 1);
                     let node_id = new_art_descriptor.node_id();
                     self.file.write_all(&node_id.to_ne_bytes())?;
-                    assert!(self.file.stream_position()? == 9);
                 }
             }
         }
