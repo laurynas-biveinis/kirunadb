@@ -234,7 +234,7 @@ mod tests {
     }
 
     #[test]
-    fn transaction_ids_sequential() {
+    fn sequential_transaction_ids() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
         let mut db = Db::open(path).unwrap();
@@ -243,6 +243,20 @@ mod tests {
         commit_ok(t1);
         let t2 = db.begin_transaction();
         let t2_id = t2.id();
+        commit_ok(t2);
+        assert_ne!(t1_id, t2_id);
+    }
+
+    #[test]
+    fn interleaved_transaction_ids() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let mut db = Db::open(path).unwrap();
+        let t1 = db.begin_transaction();
+        let t1_id = t1.id();
+        let t2 = db.begin_transaction();
+        let t2_id = t2.id();
+        commit_ok(t1);
         commit_ok(t2);
         assert_ne!(t1_id, t2_id);
     }
