@@ -248,11 +248,11 @@ mod tests {
         let t1_commit_result = t1.commit();
         assert!(t1_commit_result.is_ok());
         let mut t2 = db.begin_transaction();
-        let t2_new_node_id  = t2.new_art_descriptor_node();
+        let t2_new_node_id = t2.new_art_descriptor_node();
         let t2_commit_result = t2.commit();
         assert!(t2_commit_result.is_ok());
         assert_ne!(t1_new_node_id, t2_new_node_id);
     }
 
-        // TODO(laurynas): missing VERSION/LOG tests
+    // TODO(laurynas): missing VERSION/LOG tests
 }
