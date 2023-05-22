@@ -305,5 +305,56 @@ mod tests {
         }
     }
 
+    #[test]
+    fn node_id_assignment_consistent_on_reopen_two_ids() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let n1_id;
+        let n2_id;
+        {
+            let mut created_db = Db::open(path).unwrap();
+            let mut t1 = created_db.begin_transaction();
+            n1_id = t1.new_art_descriptor_node();
+            commit_ok(t1);
+            let mut t2 = created_db.begin_transaction();
+            n2_id = t2.new_art_descriptor_node();
+            commit_ok(t2);
+        }
+        {
+            let mut opened_db = Db::open(path).unwrap();
+            let mut transaction = opened_db.begin_transaction();
+            let n3_id = transaction.new_art_descriptor_node();
+            commit_ok(transaction);
+            assert_ne!(n1_id, n3_id);
+            assert_ne!(n2_id, n3_id);
+        }
+    }
+
+
+    #[test]
+    fn node_id_assignment_consistent_on_reopen_two_ids_lower_id_committed_later() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let n1_id;
+        let n2_id;
+        {
+            let mut created_db = Db::open(path).unwrap();
+            let mut t1 = created_db.begin_transaction();
+            n1_id = t1.new_art_descriptor_node();
+            let mut t2 = created_db.begin_transaction();
+            n2_id = t2.new_art_descriptor_node();
+            commit_ok(t2);
+            commit_ok(t1);
+        }
+        {
+            let mut opened_db = Db::open(path).unwrap();
+            let mut transaction = opened_db.begin_transaction();
+            let n3_id = transaction.new_art_descriptor_node();
+            commit_ok(transaction);
+            assert_ne!(n1_id, n3_id);
+            assert_ne!(n2_id, n3_id);
+        }
+    }
+
     // TODO(laurynas): missing VERSION/LOG tests
 }
