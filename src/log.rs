@@ -4,7 +4,7 @@ use cap_std::fs::{Dir, File, OpenOptions};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 use std::io::{self, Read, Seek, Write};
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct Log {
     file: File,
     max_logged_node_id: u64,

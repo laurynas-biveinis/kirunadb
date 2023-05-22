@@ -7,12 +7,12 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use crate::buffer_manager::BufferManager;
 use crate::log::Log;
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub enum TransactionChange {
     NewNode(TransactionChangeNewNode),
 }
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct TransactionChangeNewNode {
     node_id: u64,
 }
@@ -28,7 +28,7 @@ impl TransactionChangeNewNode {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 pub struct Transaction {
     manager: Rc<RefCell<TransactionManager>>,
     id: u64,
