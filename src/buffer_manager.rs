@@ -21,3 +21,15 @@ impl BufferManager {
             .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::BufferManager;
+
+    #[test]
+    fn node_id_sequence() {
+        let mut buffer_manager = BufferManager::new(14);
+        assert_eq!(14, buffer_manager.allocate_new_node_id());
+        assert_eq!(15, buffer_manager.allocate_new_node_id());
+    }
+}
