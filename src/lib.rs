@@ -285,5 +285,25 @@ mod tests {
         assert_ne!(t1_new_node_id, t2_new_node_id);
     }
 
+    #[test]
+    fn node_id_assignment_consistent_on_reopen() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let n1_id;
+        {
+            let mut created_db = Db::open(path).unwrap();
+            let mut transaction = created_db.begin_transaction();
+            n1_id = transaction.new_art_descriptor_node();
+            commit_ok(transaction);
+        }
+        {
+            let mut opened_db = Db::open(path).unwrap();
+            let mut transaction = opened_db.begin_transaction();
+            let n2_id = transaction.new_art_descriptor_node();
+            commit_ok(transaction);
+            assert_ne!(n1_id, n2_id);
+        }
+    }
+
     // TODO(laurynas): missing VERSION/LOG tests
 }
