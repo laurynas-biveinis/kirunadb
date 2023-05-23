@@ -29,8 +29,8 @@ jobs:
       - name: Generate lcov report
         run: |
           grcov . --binary-path ./target/debug -s . -t lcov --branch \
-              --ignore src/ffi_cxx.rs --ignore-not-existing -o ./lcov.info \
-              --excl-line "// COV_EXCL_LINE"
+              --ignore src/ffi_cxx.rs --ignore build.rs --ignore-not-existing \
+              -o ./lcov.info --excl-line "// COV_EXCL_LINE"
 
       - uses: codecov/codecov-action@v2
         with:
