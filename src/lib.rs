@@ -388,7 +388,7 @@ mod tests {
             log_file.read_exact(&mut eight_byte_buf).unwrap();
             let read_n2_id = u64::from_ne_bytes(eight_byte_buf);
             assert_eq!(read_n2_id, n2_id);
-            log_file.seek(SeekFrom::Start(9)).unwrap();
+            log_file.seek(SeekFrom::Start(10)).unwrap();
             log_file.write_all(&read_n1_id.to_ne_bytes()).unwrap();
         }
         {
