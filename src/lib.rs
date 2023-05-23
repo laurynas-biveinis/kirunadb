@@ -397,5 +397,38 @@ mod tests {
         }
     }
 
-    // TODO(laurynas): missing VERSION/LOG tests
+    #[test]
+    fn log_corruption_unknown_type() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        {
+            let mut created_db = Db::open(path).unwrap();
+            let mut transaction = created_db.begin_transaction();
+            transaction.new_art_descriptor_node();
+            commit_ok(transaction);
+        }
+        {
+            let log_path = path.join("LOG");
+            let mut log_file = OpenOptions::new()
+                .read(true)
+                .write(true)
+                .create(false)
+                .open(log_path)
+                .unwrap();
+            log_file.seek(SeekFrom::Start(0)).unwrap();
+            let mut one_byte_buf = [0; 1];
+            log_file.read_exact(&mut one_byte_buf).unwrap();
+            let existing_change_id = u8::from_ne_bytes(one_byte_buf);
+            assert_eq!(0, existing_change_id);
+            log_file.seek(SeekFrom::Start(0)).unwrap();
+            let corrupted_change_id: u8 = 0xBD;
+            log_file.write_all(&corrupted_change_id.to_ne_bytes()).unwrap();
+        }
+        {
+            let try_open_db = Db::open(path);
+            assert!(try_open_db.is_err());
+        }
+    }
+
+    // TODO(laurynas): missing VERSION tests
 }
