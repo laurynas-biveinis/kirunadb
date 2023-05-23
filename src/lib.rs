@@ -105,7 +105,8 @@ impl Db {
 mod tests {
     use crate::transaction_manager::Transaction;
     use crate::Db;
-    use std::fs;
+    use std::fs::{self, OpenOptions};
+    use std::io::{SeekFrom, Seek, Read, Write};
     use std::path::Path;
     use tempfile::TempDir;
 
@@ -330,7 +331,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn node_id_assignment_consistent_on_reopen_two_ids_lower_id_committed_later() {
         let temp_dir = get_temp_dir();
@@ -353,6 +353,47 @@ mod tests {
             commit_ok(transaction);
             assert_ne!(n1_id, n3_id);
             assert_ne!(n2_id, n3_id);
+        }
+    }
+
+    #[test]
+    fn node_id_assignment_corruption_repeated_id() {
+        let temp_dir = get_temp_dir();
+        let path = temp_dir.path();
+        let n1_id;
+        let n2_id;
+        {
+            let mut created_db = Db::open(path).unwrap();
+            let mut t1 = created_db.begin_transaction();
+            n1_id = t1.new_art_descriptor_node();
+            commit_ok(t1);
+            let mut t2 = created_db.begin_transaction();
+            n2_id = t2.new_art_descriptor_node();
+            commit_ok(t2);
+        }
+        {
+            let log_path = path.join("LOG");
+            let mut log_file = OpenOptions::new()
+                .read(true)
+                .write(true)
+                .create(false)
+                .open(log_path)
+                .unwrap();
+            log_file.seek(SeekFrom::Start(1)).unwrap();
+            let mut eight_byte_buf = [0; 8];
+            log_file.read_exact(&mut eight_byte_buf).unwrap();
+            let read_n1_id = u64::from_ne_bytes(eight_byte_buf);
+            assert_eq!(read_n1_id, n1_id);
+            log_file.seek(SeekFrom::Start(10)).unwrap();
+            log_file.read_exact(&mut eight_byte_buf).unwrap();
+            let read_n2_id = u64::from_ne_bytes(eight_byte_buf);
+            assert_eq!(read_n2_id, n2_id);
+            log_file.seek(SeekFrom::Start(9)).unwrap();
+            log_file.write_all(&read_n1_id.to_ne_bytes()).unwrap();
+        }
+        {
+            let try_open_db = Db::open(path);
+            assert!(try_open_db.is_err());
         }
     }
 
