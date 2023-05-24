@@ -1,5 +1,6 @@
 // Copyright(C) 2023 Laurynas Biveinis
 #![deny(clippy::pedantic)]
+#![allow(clippy::unwrap_used)]
 
 use kirunadb::Db;
 use std::path::Path;
