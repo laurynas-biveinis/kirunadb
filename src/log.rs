@@ -2,7 +2,10 @@
 use crate::{transaction_manager::TransactionChange, DbError};
 use cap_std::fs::{Dir, File, OpenOptions};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
-use std::io::{self, Read, Write};
+use std::{
+    io::{self, Read, Write},
+    path::Path,
+};
 
 #[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
@@ -28,8 +31,7 @@ impl ChangeId {
 }
 
 impl Log {
-    // TODO(laurynas): here and below: s/&str/Path or something?
-    pub fn open(dir_handle: &Dir, log_file_name: &str, create: bool) -> Result<Log, DbError> {
+    pub fn open(dir_handle: &Dir, log_file_name: &Path, create: bool) -> Result<Log, DbError> {
         let mut file = if create {
             dir_handle.open_with(
                 log_file_name,

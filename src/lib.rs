@@ -87,7 +87,7 @@ impl Db {
                 dir_handle.open_with(Db::VERSION_FILE_NAME, OpenOptions::new().read(true))
             }?;
         }
-        let log = Log::open(&dir_handle, Db::LOG_FILE_NAME, is_dir_empty)?;
+        let log = Log::open(&dir_handle, Path::new(Db::LOG_FILE_NAME), is_dir_empty)?;
         let buffer_manager = BufferManager::new(log.max_logged_node_id() + 1);
         let transaction_manager = TransactionManager::new(buffer_manager, log);
         Ok(Db {
@@ -205,6 +205,4 @@ mod tests {
         let mut db = Db::open(path).unwrap();
         let _transaction = db.begin_transaction();
     }
-
-    // TODO(laurynas): missing VERSION tests
 }
