@@ -119,6 +119,11 @@ mod tests {
         std::fs::set_permissions(path, path_permissions).unwrap();
     }
 
+    fn open_db_ok(path: &Path) {
+        let db = Db::open(path);
+        assert!(db.is_ok());
+    }
+
     fn commit_ok(mut t: Transaction) {
         let commit_result = t.commit();
         assert!(commit_result.is_ok());
@@ -129,16 +134,14 @@ mod tests {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
         let nonexisting_path = path.join("nonexistingdir");
-        let db = Db::open(&nonexisting_path);
-        assert!(db.is_ok());
+        open_db_ok(&nonexisting_path);
     }
 
     #[test]
     fn create_db_create_dir() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        let db = Db::open(path);
-        assert!(db.is_ok());
+        open_db_ok(path);
     }
 
     #[test]
@@ -146,8 +149,7 @@ mod tests {
         let temp_dir = get_temp_dir();
         let saved_cwd = std::env::current_dir().unwrap();
         std::env::set_current_dir(temp_dir.path()).unwrap();
-        let db = Db::open(Path::new("relative_under_temp"));
-        assert!(db.is_ok());
+        open_db_ok(Path::new("relative_under_temp"));
         std::env::set_current_dir(saved_cwd).unwrap();
     }
 
@@ -183,24 +185,15 @@ mod tests {
     fn open_created_db() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        {
-            let created_db = Db::open(path);
-            assert!(created_db.is_ok());
-        }
-        {
-            let opened_db = Db::open(path);
-            assert!(opened_db.is_ok());
-        }
+        open_db_ok(path);
+        open_db_ok(path);
     }
 
     #[test]
     fn try_open_db_missing_version() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        {
-            let created_db = Db::open(path);
-            assert!(created_db.is_ok());
-        }
+        open_db_ok(path);
         let version_path = path.join("VERSION");
         fs::remove_file(version_path).expect("Deleting VERSION must succeed");
         {
@@ -213,10 +206,7 @@ mod tests {
     fn try_open_db_missing_log() {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
-        {
-            let created_db = Db::open(path);
-            assert!(created_db.is_ok());
-        }
+        open_db_ok(path);
         let version_path = path.join("LOG");
         fs::remove_file(version_path).expect("Deleting LOG must succeed");
         {
