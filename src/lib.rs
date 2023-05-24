@@ -104,7 +104,7 @@ impl Db {
 mod tests {
     use crate::transaction_manager::Transaction;
     use crate::Db;
-    use std::fs::{self, OpenOptions};
+    use std::fs::{self, File, OpenOptions};
     use std::io::{Read, Seek, SeekFrom, Write};
     use std::path::Path;
     use tempfile::TempDir;
@@ -132,6 +132,40 @@ mod tests {
     fn commit_ok(mut t: Transaction) {
         let commit_result = t.commit();
         assert!(commit_result.is_ok());
+    }
+
+    fn open_log_for_corruption(db_path: &Path) -> File {
+        let log_path = db_path.join("LOG");
+        OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(false)
+            .open(log_path)
+            .unwrap()
+    }
+
+    fn expect_u64(file: &mut File, offset: u64, value: u64) {
+        file.seek(SeekFrom::Start(offset)).unwrap();
+        let mut u64_buf = [0; 8];
+        file.read_exact(&mut u64_buf).unwrap();
+        let existing = u64::from_ne_bytes(u64_buf);
+        assert_eq!(existing, value);
+    }
+
+    fn replace_u64(file: &mut File, offset: u64, expected: u64, new: u64) {
+        expect_u64(file, offset, expected);
+        file.seek(SeekFrom::Start(offset)).unwrap();
+        file.write_all(&new.to_ne_bytes()).unwrap();
+    }
+
+    fn replace_u8(file: &mut File, offset: u64, expected: u8, new: u8) {
+        file.seek(SeekFrom::Start(offset)).unwrap();
+        let mut u8_buf = [0; 1];
+        file.read_exact(&mut u8_buf).unwrap();
+        let existing = u8::from_ne_bytes(u8_buf);
+        assert_eq!(existing, expected);
+        file.seek(SeekFrom::Start(offset)).unwrap();
+        file.write_all(&new.to_ne_bytes()).unwrap();
     }
 
     #[test]
@@ -357,24 +391,9 @@ mod tests {
             commit_ok(t2);
         }
         {
-            let log_path = path.join("LOG");
-            let mut log_file = OpenOptions::new()
-                .read(true)
-                .write(true)
-                .create(false)
-                .open(log_path)
-                .unwrap();
-            log_file.seek(SeekFrom::Start(1)).unwrap();
-            let mut eight_byte_buf = [0; 8];
-            log_file.read_exact(&mut eight_byte_buf).unwrap();
-            let read_n1_id = u64::from_ne_bytes(eight_byte_buf);
-            assert_eq!(read_n1_id, n1_id);
-            log_file.seek(SeekFrom::Start(10)).unwrap();
-            log_file.read_exact(&mut eight_byte_buf).unwrap();
-            let read_n2_id = u64::from_ne_bytes(eight_byte_buf);
-            assert_eq!(read_n2_id, n2_id);
-            log_file.seek(SeekFrom::Start(10)).unwrap();
-            log_file.write_all(&read_n1_id.to_ne_bytes()).unwrap();
+            let mut log_file = open_log_for_corruption(path);
+            expect_u64(&mut log_file, 1, n1_id);
+            replace_u64(&mut log_file, 10, n2_id, n1_id);
         }
         open_db_err(path);
     }
@@ -390,23 +409,8 @@ mod tests {
             commit_ok(transaction);
         }
         {
-            let log_path = path.join("LOG");
-            let mut log_file = OpenOptions::new()
-                .read(true)
-                .write(true)
-                .create(false)
-                .open(log_path)
-                .unwrap();
-            log_file.seek(SeekFrom::Start(0)).unwrap();
-            let mut one_byte_buf = [0; 1];
-            log_file.read_exact(&mut one_byte_buf).unwrap();
-            let existing_change_id = u8::from_ne_bytes(one_byte_buf);
-            assert_eq!(0, existing_change_id);
-            log_file.seek(SeekFrom::Start(0)).unwrap();
-            let corrupted_change_id: u8 = 0xBD;
-            log_file
-                .write_all(&corrupted_change_id.to_ne_bytes())
-                .unwrap();
+            let mut log_file = open_log_for_corruption(path);
+            replace_u8(&mut log_file, 0, 0, 0xBD);
         }
         open_db_err(path);
     }
