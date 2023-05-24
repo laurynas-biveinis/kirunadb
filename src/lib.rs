@@ -105,12 +105,12 @@ mod tests {
     use crate::transaction_manager::Transaction;
     use crate::Db;
     use std::fs::{self, OpenOptions};
-    use std::io::{SeekFrom, Seek, Read, Write};
+    use std::io::{Read, Seek, SeekFrom, Write};
     use std::path::Path;
     use tempfile::TempDir;
 
     fn get_temp_dir() -> TempDir {
-        TempDir::new().expect("Creating a temp dir must succeed")
+        TempDir::new().unwrap()
     }
 
     fn make_path_read_only(path: &Path) {
