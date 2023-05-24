@@ -1,6 +1,8 @@
 // Copyright (C) 2023 Laurynas Biveinis
-use kirunadb::Db;
+#![deny(clippy::pedantic)]
+
 use kirunadb::transaction_manager::Transaction;
+use kirunadb::Db;
 use kirunadb_test_helpers::get_temp_dir;
 use kirunadb_test_helpers::open_db_err;
 use std::fs::File;
