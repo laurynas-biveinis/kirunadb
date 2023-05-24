@@ -421,7 +421,9 @@ mod tests {
             assert_eq!(0, existing_change_id);
             log_file.seek(SeekFrom::Start(0)).unwrap();
             let corrupted_change_id: u8 = 0xBD;
-            log_file.write_all(&corrupted_change_id.to_ne_bytes()).unwrap();
+            log_file
+                .write_all(&corrupted_change_id.to_ne_bytes())
+                .unwrap();
         }
         {
             let try_open_db = Db::open(path);
