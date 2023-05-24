@@ -23,7 +23,8 @@ impl TransactionChangeNewNode {
     }
 
     #[inline]
-    #[must_use] pub fn node_id(&self) -> u64 {
+    #[must_use]
+    pub fn node_id(&self) -> u64 {
         self.node_id
     }
 }
@@ -59,7 +60,8 @@ impl Transaction {
         new_node_id
     }
 
-    #[must_use] pub fn id(&self) -> u64 {
+    #[must_use]
+    pub fn id(&self) -> u64 {
         self.id
     }
 }

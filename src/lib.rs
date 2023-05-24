@@ -103,10 +103,10 @@ impl Db {
 #[cfg(test)]
 mod tests {
     use crate::Db;
-    use std::fs;
-    use std::path::Path;
     use kirunadb_test_helpers::get_temp_dir;
     use kirunadb_test_helpers::open_db_err;
+    use std::fs;
+    use std::path::Path;
 
     fn make_path_read_only(path: &Path) {
         let mut path_permissions = path.metadata().unwrap().permissions();
