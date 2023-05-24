@@ -17,6 +17,7 @@ enum ChangeId {
 }
 
 impl ChangeId {
+    #[inline]
     fn new(transaction_change: &TransactionChange) -> Self {
         match transaction_change {
             TransactionChange::NewNode(_) => Self::NewNode,
@@ -90,6 +91,7 @@ impl Log {
         Ok(())
     }
 
+    #[inline]
     pub fn max_logged_node_id(&self) -> u64 {
         self.max_logged_node_id
     }

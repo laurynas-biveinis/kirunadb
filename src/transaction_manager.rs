@@ -60,6 +60,7 @@ impl Transaction {
         new_node_id
     }
 
+    #[inline]
     #[must_use]
     pub fn id(&self) -> u64 {
         self.id
