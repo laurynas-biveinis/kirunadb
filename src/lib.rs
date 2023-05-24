@@ -124,6 +124,11 @@ mod tests {
         assert!(db.is_ok());
     }
 
+    fn open_db_err(path: &Path) {
+        let db = Db::open(path);
+        assert!(db.is_err());
+    }
+
     fn commit_ok(mut t: Transaction) {
         let commit_result = t.commit();
         assert!(commit_result.is_ok());
@@ -156,8 +161,7 @@ mod tests {
     #[test]
     fn try_open_db_nonexisting_path() {
         let non_existing_path = Path::new("/non/ex/ist/ing/p/ath");
-        let db = Db::open(non_existing_path);
-        assert!(db.is_err());
+        open_db_err(non_existing_path);
     }
 
     #[test]
@@ -166,8 +170,7 @@ mod tests {
         let temp_dir = get_temp_dir();
         let path = temp_dir.path();
         make_path_read_only(path);
-        let db = Db::open(path);
-        assert!(db.is_err());
+        open_db_err(path);
     }
 
     #[test]
@@ -177,8 +180,7 @@ mod tests {
         let path = temp_dir.path();
         make_path_read_only(path);
         let nonexisting_path = path.join("nonexistingdir");
-        let db = Db::open(&nonexisting_path);
-        assert!(db.is_err());
+        open_db_err(&nonexisting_path);
     }
 
     #[test]
@@ -196,10 +198,7 @@ mod tests {
         open_db_ok(path);
         let version_path = path.join("VERSION");
         fs::remove_file(version_path).expect("Deleting VERSION must succeed");
-        {
-            let db = Db::open(path);
-            assert!(db.is_err());
-        }
+        open_db_err(path);
     }
 
     #[test]
@@ -209,10 +208,7 @@ mod tests {
         open_db_ok(path);
         let version_path = path.join("LOG");
         fs::remove_file(version_path).expect("Deleting LOG must succeed");
-        {
-            let db = Db::open(path);
-            assert!(db.is_err());
-        }
+        open_db_err(path);
     }
 
     #[test]
@@ -380,10 +376,7 @@ mod tests {
             log_file.seek(SeekFrom::Start(10)).unwrap();
             log_file.write_all(&read_n1_id.to_ne_bytes()).unwrap();
         }
-        {
-            let try_open_db = Db::open(path);
-            assert!(try_open_db.is_err());
-        }
+        open_db_err(path);
     }
 
     #[test]
@@ -415,10 +408,7 @@ mod tests {
                 .write_all(&corrupted_change_id.to_ne_bytes())
                 .unwrap();
         }
-        {
-            let try_open_db = Db::open(path);
-            assert!(try_open_db.is_err());
-        }
+        open_db_err(path);
     }
 
     // TODO(laurynas): missing VERSION tests
