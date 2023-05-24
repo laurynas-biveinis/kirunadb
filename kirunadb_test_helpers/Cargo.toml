@@ -1,0 +1,15 @@
+[package]
+name = "kirunadb_test_helpers"
+version = "0.0.1"
+edition = "2021"
+authors = ["Laurynas Biveinis <laurynas.biveinis@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "An internal KirunaDB crate"
+homepage = "https://github.com/laurynas-biveinis/kirunadb"
+repository = "https://github.com/laurynas-biveinis/kirunadb"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kirunadb = { path = ".." }
+tempfile = "3.5"

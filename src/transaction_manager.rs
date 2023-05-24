@@ -23,7 +23,7 @@ impl TransactionChangeNewNode {
     }
 
     #[inline]
-    pub fn node_id(&self) -> u64 {
+    #[must_use] pub fn node_id(&self) -> u64 {
         self.node_id
     }
 }
@@ -44,6 +44,8 @@ impl Transaction {
         }
     }
 
+    /// # Errors
+    /// Will return `io::Error` if it encounters any.
     pub fn commit(&mut self) -> Result<(), io::Error> {
         self.manager.borrow_mut().log_append(&self.changes)
     }
@@ -57,7 +59,7 @@ impl Transaction {
         new_node_id
     }
 
-    pub fn id(&self) -> u64 {
+    #[must_use] pub fn id(&self) -> u64 {
         self.id
     }
 }
