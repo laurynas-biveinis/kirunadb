@@ -197,7 +197,7 @@ mod tests {
         let path = temp_dir.path();
         open_db_ok(path);
         let version_path = path.join("VERSION");
-        fs::remove_file(version_path).expect("Deleting VERSION must succeed");
+        fs::remove_file(version_path).unwrap();
         open_db_err(path);
     }
 
@@ -207,7 +207,7 @@ mod tests {
         let path = temp_dir.path();
         open_db_ok(path);
         let version_path = path.join("LOG");
-        fs::remove_file(version_path).expect("Deleting LOG must succeed");
+        fs::remove_file(version_path).unwrap();
         open_db_err(path);
     }
 
