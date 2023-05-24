@@ -6,6 +6,7 @@ use kirunadb::Db;
 use std::path::Path;
 use tempfile::TempDir;
 
+#[must_use]
 pub fn get_temp_dir() -> TempDir {
     TempDir::new().unwrap()
 }

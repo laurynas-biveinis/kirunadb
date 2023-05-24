@@ -8,11 +8,13 @@ use crate::buffer_manager::BufferManager;
 use crate::log::Log;
 
 #[derive(Debug)] // COV_EXCL_LINE
+#[must_use]
 pub enum TransactionChange {
     NewNode(TransactionChangeNewNode),
 }
 
 #[derive(Debug)] // COV_EXCL_LINE
+#[must_use]
 pub struct TransactionChangeNewNode {
     node_id: u64,
 }
@@ -30,6 +32,7 @@ impl TransactionChangeNewNode {
 }
 
 #[derive(Debug)] // COV_EXCL_LINE
+#[must_use]
 pub struct Transaction {
     manager: Rc<RefCell<TransactionManager>>,
     id: u64,
@@ -52,6 +55,7 @@ impl Transaction {
     }
 
     // TODO(laurynas): Option a better fit? But cxx.rs not there yet.
+    #[must_use]
     pub fn new_art_descriptor_node(&mut self) -> u64 {
         let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
         let new_node_id = new_node_trx_change.node_id();
@@ -68,6 +72,7 @@ impl Transaction {
 }
 
 #[derive(Debug)] // COV_EXCL_LINE
+#[must_use]
 pub struct TransactionManager {
     buffer_manager: BufferManager,
     log: Log,
@@ -84,6 +89,7 @@ impl TransactionManager {
     }
 
     #[inline]
+    #[must_use]
     pub fn assign_next_id(&mut self) -> u64 {
         self.next_id.fetch_add(1, Ordering::Relaxed)
     }

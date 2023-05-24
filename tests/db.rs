@@ -16,6 +16,7 @@ fn commit_ok(mut t: Transaction) {
     assert!(commit_result.is_ok());
 }
 
+#[must_use]
 fn open_log_for_corruption(db_path: &Path) -> File {
     let log_path = db_path.join("LOG");
     OpenOptions::new()
@@ -202,7 +203,7 @@ fn log_corruption_unknown_type() {
     {
         let mut created_db = Db::open(path).unwrap();
         let mut transaction = created_db.begin_transaction();
-        transaction.new_art_descriptor_node();
+        let _n = transaction.new_art_descriptor_node();
         commit_ok(transaction);
     }
     {

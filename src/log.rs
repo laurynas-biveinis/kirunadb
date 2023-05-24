@@ -5,6 +5,7 @@ use num_enum::{IntoPrimitive, TryFromPrimitive};
 use std::io::{self, Read, Write};
 
 #[derive(Debug)] // COV_EXCL_LINE
+#[must_use]
 pub struct Log {
     file: File,
     max_logged_node_id: u64,
@@ -12,6 +13,7 @@ pub struct Log {
 
 #[derive(IntoPrimitive, TryFromPrimitive)]
 #[repr(u8)]
+#[must_use]
 enum ChangeId {
     NewNode = 0,
 }
@@ -92,6 +94,7 @@ impl Log {
     }
 
     #[inline]
+    #[must_use]
     pub fn max_logged_node_id(&self) -> u64 {
         self.max_logged_node_id
     }
