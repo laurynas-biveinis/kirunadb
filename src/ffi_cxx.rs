@@ -46,7 +46,6 @@ pub fn drop_transaction(transaction: Box<Transaction>) {
     std::mem::drop(transaction);
 }
 
-// TODO(laurynas): C++17 std::path?
 pub fn open(path: &str) -> Result<Box<Db>, DbError> {
     let path = Path::new(path);
     let db = Db::open(path)?;

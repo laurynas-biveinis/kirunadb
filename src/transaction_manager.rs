@@ -54,7 +54,6 @@ impl Transaction {
         self.manager.borrow_mut().log_append(&self.changes)
     }
 
-    // TODO(laurynas): Option a better fit? But cxx.rs not there yet.
     #[must_use]
     pub fn new_art_descriptor_node(&mut self) -> u64 {
         let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();

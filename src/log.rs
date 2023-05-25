@@ -44,7 +44,7 @@ impl Log {
             0
         } else {
             let mut max_logged_node_id = 0;
-            // TODO(laurynas): MaybeUninit?
+            // We could use MaybeUninit here, but not worth it.
             let mut one_byte_buf = [0; 1];
             loop {
                 let n = file.read(&mut one_byte_buf)?;
