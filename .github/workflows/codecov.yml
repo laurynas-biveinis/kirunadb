@@ -23,7 +23,7 @@ jobs:
         run: |
           export CARGO_INCREMENTAL=0
           export RUSTFLAGS="-Cinstrument-coverage"
-          RUSTFLAGS+=" -Wl,--allow-multiple-definition"
+          RUSTFLAGS+=" -Clink-arg=-Wl,--allow-multiple-definition"
           cargo test
 
       - name: Generate lcov report
