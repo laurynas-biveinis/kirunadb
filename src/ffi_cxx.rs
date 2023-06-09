@@ -8,6 +8,7 @@ use std::path::Path;
     clippy::items_after_statements,
     clippy::let_underscore_untyped,
     clippy::trait_duplication_in_bounds,
+    clippy::unnecessary_box_returns,
     clippy::used_underscore_binding,
     let_underscore_drop
 )]
@@ -17,7 +18,7 @@ pub mod interface {
 
         pub fn id(self: &Transaction) -> u64;
 
-        pub fn new_art_descriptor_node(self: &mut Transaction) -> u64;
+        pub fn new_art_descriptor_node(self: &mut Transaction) -> Result<u64>;
 
         // Assuming pessimistic locking so that a failure to commit is
         // exceptional
@@ -35,6 +36,7 @@ pub mod interface {
     }
 }
 
+#[allow(clippy::unnecessary_box_returns)]
 #[inline]
 pub fn begin_transaction(db: &mut Db) -> Box<Transaction> {
     let transaction = db.begin_transaction();

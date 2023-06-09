@@ -84,8 +84,8 @@ fn transaction_new_node() {
     let temp_dir = get_temp_dir();
     let path = temp_dir.path();
     let mut db = Db::open(path).unwrap();
-    let mut transaction = db.begin_transaction();
-    let _new_node_id = transaction.new_art_descriptor_node();
+    let transaction = db.begin_transaction();
+    let _new_node_id = transaction.new_art_descriptor_node().unwrap();
     commit_ok(transaction);
 }
 
@@ -94,11 +94,11 @@ fn transaction_two_new_nodes() {
     let temp_dir = get_temp_dir();
     let path = temp_dir.path();
     let mut db = Db::open(path).unwrap();
-    let mut t1 = db.begin_transaction();
-    let t1_new_node_id = t1.new_art_descriptor_node();
+    let t1 = db.begin_transaction();
+    let t1_new_node_id = t1.new_art_descriptor_node().unwrap();
     commit_ok(t1);
-    let mut t2 = db.begin_transaction();
-    let t2_new_node_id = t2.new_art_descriptor_node();
+    let t2 = db.begin_transaction();
+    let t2_new_node_id = t2.new_art_descriptor_node().unwrap();
     commit_ok(t2);
     assert_ne!(t1_new_node_id, t2_new_node_id);
 }
@@ -110,14 +110,14 @@ fn node_id_assignment_consistent_on_reopen() {
     let n1_id;
     {
         let mut created_db = Db::open(path).unwrap();
-        let mut transaction = created_db.begin_transaction();
-        n1_id = transaction.new_art_descriptor_node();
+        let transaction = created_db.begin_transaction();
+        n1_id = transaction.new_art_descriptor_node().unwrap();
         commit_ok(transaction);
     }
     {
         let mut opened_db = Db::open(path).unwrap();
-        let mut transaction = opened_db.begin_transaction();
-        let n2_id = transaction.new_art_descriptor_node();
+        let transaction = opened_db.begin_transaction();
+        let n2_id = transaction.new_art_descriptor_node().unwrap();
         commit_ok(transaction);
         assert_ne!(n1_id, n2_id);
     }
@@ -131,17 +131,17 @@ fn node_id_assignment_consistent_on_reopen_two_ids() {
     let n2_id;
     {
         let mut created_db = Db::open(path).unwrap();
-        let mut t1 = created_db.begin_transaction();
-        n1_id = t1.new_art_descriptor_node();
+        let t1 = created_db.begin_transaction();
+        n1_id = t1.new_art_descriptor_node().unwrap();
         commit_ok(t1);
-        let mut t2 = created_db.begin_transaction();
-        n2_id = t2.new_art_descriptor_node();
+        let t2 = created_db.begin_transaction();
+        n2_id = t2.new_art_descriptor_node().unwrap();
         commit_ok(t2);
     }
     {
         let mut opened_db = Db::open(path).unwrap();
-        let mut transaction = opened_db.begin_transaction();
-        let n3_id = transaction.new_art_descriptor_node();
+        let transaction = opened_db.begin_transaction();
+        let n3_id = transaction.new_art_descriptor_node().unwrap();
         commit_ok(transaction);
         assert_ne!(n1_id, n3_id);
         assert_ne!(n2_id, n3_id);
@@ -156,17 +156,17 @@ fn node_id_assignment_consistent_on_reopen_two_ids_lower_id_committed_later() {
     let n2_id;
     {
         let mut created_db = Db::open(path).unwrap();
-        let mut t1 = created_db.begin_transaction();
-        n1_id = t1.new_art_descriptor_node();
-        let mut t2 = created_db.begin_transaction();
-        n2_id = t2.new_art_descriptor_node();
+        let t1 = created_db.begin_transaction();
+        n1_id = t1.new_art_descriptor_node().unwrap();
+        let t2 = created_db.begin_transaction();
+        n2_id = t2.new_art_descriptor_node().unwrap();
         commit_ok(t2);
         commit_ok(t1);
     }
     {
         let mut opened_db = Db::open(path).unwrap();
-        let mut transaction = opened_db.begin_transaction();
-        let n3_id = transaction.new_art_descriptor_node();
+        let transaction = opened_db.begin_transaction();
+        let n3_id = transaction.new_art_descriptor_node().unwrap();
         commit_ok(transaction);
         assert_ne!(n1_id, n3_id);
         assert_ne!(n2_id, n3_id);
@@ -181,11 +181,11 @@ fn node_id_assignment_corruption_repeated_id() {
     let n2_id;
     {
         let mut created_db = Db::open(path).unwrap();
-        let mut t1 = created_db.begin_transaction();
-        n1_id = t1.new_art_descriptor_node();
+        let t1 = created_db.begin_transaction();
+        n1_id = t1.new_art_descriptor_node().unwrap();
         commit_ok(t1);
-        let mut t2 = created_db.begin_transaction();
-        n2_id = t2.new_art_descriptor_node();
+        let t2 = created_db.begin_transaction();
+        n2_id = t2.new_art_descriptor_node().unwrap();
         commit_ok(t2);
     }
     {
@@ -202,8 +202,8 @@ fn log_corruption_unknown_type() {
     let path = temp_dir.path();
     {
         let mut created_db = Db::open(path).unwrap();
-        let mut transaction = created_db.begin_transaction();
-        let _n = transaction.new_art_descriptor_node();
+        let transaction = created_db.begin_transaction();
+        let _n = transaction.new_art_descriptor_node().unwrap();
         commit_ok(transaction);
     }
     {
