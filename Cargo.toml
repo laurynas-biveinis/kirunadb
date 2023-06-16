@@ -12,7 +12,9 @@ repository = "https://github.com/laurynas-biveinis/kirunadb"
 edition = "2021"
 
 [lib]
-crate-type=["rlib", "cdylib"]
+# Coverage testing needs rlib
+# MySQL build needs staticlib
+crate-type=["rlib", "staticlib", "cdylib"]
 
 [dependencies]
 cap-std = "1.0"
