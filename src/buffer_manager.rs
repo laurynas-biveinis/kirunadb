@@ -9,14 +9,13 @@ pub struct BufferManager {
 
 impl BufferManager {
     #[must_use]
-    pub fn new(first_free_node_id: Id) -> BufferManager {
-        BufferManager {
+    pub fn new(first_free_node_id: Id) -> Self {
+        Self {
             next_node_id: AtomicNodeId::new(first_free_node_id),
         }
     }
 
     #[inline]
-    #[must_use]
     pub fn allocate_new_node_id(&mut self) -> Id {
         self.next_node_id.get_and_advance()
     }

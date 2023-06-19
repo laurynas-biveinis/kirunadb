@@ -24,12 +24,11 @@ pub struct TransactionChangeNewNode {
 }
 
 impl TransactionChangeNewNode {
-    fn new(node_id: Id) -> TransactionChangeNewNode {
-        TransactionChangeNewNode { node_id }
+    fn new(node_id: Id) -> Self {
+        Self { node_id }
     }
 
     #[inline]
-    #[must_use]
     pub fn node_id(&self) -> Id {
         self.node_id
     }
@@ -74,8 +73,8 @@ pub struct Transaction {
 }
 
 impl Transaction {
-    pub fn new(manager: &Rc<RefCell<TransactionManager>>, id: u64) -> Transaction {
-        Transaction {
+    pub fn new(manager: &Rc<RefCell<TransactionManager>>, id: u64) -> Self {
+        Self {
             manager: manager.clone(),
             id,
             changes: Vec::new(),
@@ -118,8 +117,8 @@ pub struct TransactionManager {
 }
 
 impl TransactionManager {
-    pub fn new(buffer_manager: BufferManager, log: Log) -> TransactionManager {
-        TransactionManager {
+    pub fn new(buffer_manager: BufferManager, log: Log) -> Self {
+        Self {
             buffer_manager,
             log,
             next_id: AtomicU64::new(0),

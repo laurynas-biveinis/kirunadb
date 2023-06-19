@@ -7,23 +7,26 @@ use std::{
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[must_use]
 pub struct Id(u64);
 
 impl Id {
-    const NULL: Id = Self(0);
+    const NULL: Self = Self(0);
 
-    #[must_use]
+    #[inline]
     pub fn next(self) -> Self {
         debug_assert_ne!(self.0, u64::MAX);
-        Id::from(self.0 + 1)
+        Self::from(self.0 + 1)
     }
 
     #[must_use]
+    #[inline]
     pub fn as_u64(self) -> u64 {
         self.0
     }
 
     #[must_use]
+    #[inline]
     pub fn to_ne_bytes(self) -> [u8; 8] {
         self.0.to_ne_bytes()
     }
@@ -36,20 +39,24 @@ impl Display for Id {
 }
 
 impl From<u64> for Id {
+    #[inline]
     fn from(val: u64) -> Self {
-        Id(val)
+        Self(val)
     }
 }
 
 #[derive(Debug)]
+#[must_use]
 pub struct AtomicNodeId(AtomicU64);
 
 impl AtomicNodeId {
+    #[inline]
     pub fn new(id: Id) -> Self {
         debug_assert_ne!(id, Id::NULL);
-        AtomicNodeId(AtomicU64::new(id.as_u64()))
+        Self(AtomicU64::new(id.as_u64()))
     }
 
+    #[inline]
     pub fn get_and_advance(&mut self) -> Id {
         let result_u64 = self.0.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let result = Id(result_u64);

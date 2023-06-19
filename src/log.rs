@@ -31,7 +31,7 @@ impl ChangeId {
 }
 
 impl Log {
-    pub fn open(dir_handle: &Dir, log_file_name: &Path, create: bool) -> Result<Log, DbError> {
+    pub fn open(dir_handle: &Dir, log_file_name: &Path, create: bool) -> Result<Self, DbError> {
         let mut file = if create {
             dir_handle.open_with(
                 log_file_name,
@@ -76,7 +76,7 @@ impl Log {
             }
             max_logged_node_id
         };
-        Ok(Log {
+        Ok(Self {
             file,
             max_logged_node_id: Id::from(max_logged_node_id),
         })
@@ -103,7 +103,6 @@ impl Log {
     }
 
     #[inline]
-    #[must_use]
     pub fn max_logged_node_id(&self) -> Id {
         self.max_logged_node_id
     }

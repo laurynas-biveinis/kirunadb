@@ -49,7 +49,7 @@ impl Db {
 
     /// # Errors
     /// Will return `DbError` if it encounters any.
-    pub fn open(path: &Path) -> Result<Db, DbError> {
+    pub fn open(path: &Path) -> Result<Self, DbError> {
         let absolute_path: PathBuf = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -82,17 +82,17 @@ impl Db {
         {
             let _version_file = if is_dir_empty {
                 dir_handle.open_with(
-                    Db::VERSION_FILE_NAME,
+                    Self::VERSION_FILE_NAME,
                     OpenOptions::new().write(true).create_new(true),
                 )
             } else {
-                dir_handle.open_with(Db::VERSION_FILE_NAME, OpenOptions::new().read(true))
+                dir_handle.open_with(Self::VERSION_FILE_NAME, OpenOptions::new().read(true))
             }?;
         }
-        let log = Log::open(&dir_handle, Path::new(Db::LOG_FILE_NAME), is_dir_empty)?;
+        let log = Log::open(&dir_handle, Path::new(Self::LOG_FILE_NAME), is_dir_empty)?;
         let buffer_manager = BufferManager::new(log.max_logged_node_id().next());
         let transaction_manager = TransactionManager::new(buffer_manager, log);
-        Ok(Db {
+        Ok(Self {
             _dir_handle: dir_handle,
             transaction_manager: Rc::new(RefCell::new(transaction_manager)),
         })
