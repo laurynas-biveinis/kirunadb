@@ -4,9 +4,11 @@
 mod buffer_manager;
 mod ffi_cxx;
 mod log;
+mod node;
 pub mod transaction_manager;
 
 use crate::log::Log;
+use crate::node::Id;
 use buffer_manager::BufferManager;
 use cap_std::fs::Dir;
 use cap_std::fs::OpenOptions;
@@ -29,7 +31,7 @@ pub enum DbError {
     #[error("Corruption: incorrect log record type {bad_type}")]
     BadLogRecordType { bad_type: u8 },
     #[error("Corruption: logged multiple allocations for the same node ID {node_id}")]
-    LoggedMultipleNodeIdAllocations { node_id: u64 },
+    LoggedMultipleNodeIdAllocations { node_id: Id },
 }
 
 // Do the simplest thing that works. Later generalize to being able to contain
@@ -88,7 +90,7 @@ impl Db {
             }?;
         }
         let log = Log::open(&dir_handle, Path::new(Db::LOG_FILE_NAME), is_dir_empty)?;
-        let buffer_manager = BufferManager::new(log.max_logged_node_id() + 1);
+        let buffer_manager = BufferManager::new(log.max_logged_node_id().next());
         let transaction_manager = TransactionManager::new(buffer_manager, log);
         Ok(Db {
             _dir_handle: dir_handle,

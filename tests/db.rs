@@ -190,8 +190,8 @@ fn node_id_assignment_corruption_repeated_id() {
     }
     {
         let mut log_file = open_log_for_corruption(path);
-        expect_u64(&mut log_file, 1, n1_id);
-        replace_u64(&mut log_file, 10, n2_id, n1_id);
+        expect_u64(&mut log_file, 1, n1_id.as_u64());
+        replace_u64(&mut log_file, 10, n2_id.as_u64(), n1_id.as_u64());
     }
     open_db_err(path);
 }

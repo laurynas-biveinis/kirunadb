@@ -6,6 +6,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::buffer_manager::BufferManager;
 use crate::log::Log;
+use crate::node::Id;
 
 #[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
@@ -19,17 +20,17 @@ pub enum TransactionChange {
 #[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
 pub struct TransactionChangeNewNode {
-    node_id: u64,
+    node_id: Id,
 }
 
 impl TransactionChangeNewNode {
-    fn new(node_id: u64) -> TransactionChangeNewNode {
+    fn new(node_id: Id) -> TransactionChangeNewNode {
         TransactionChangeNewNode { node_id }
     }
 
     #[inline]
     #[must_use]
-    pub fn node_id(&self) -> u64 {
+    pub fn node_id(&self) -> Id {
         self.node_id
     }
 }
@@ -54,7 +55,7 @@ impl SystemTransaction {
         Ok(())
     }
 
-    fn commit_new_art_descriptor_node(&mut self) -> Result<u64, io::Error> {
+    fn commit_new_art_descriptor_node(&mut self) -> Result<Id, io::Error> {
         let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
         let new_node_id = new_node_trx_change.node_id();
         let trx_change = TransactionChange::NewNode(new_node_trx_change);
@@ -90,7 +91,7 @@ impl Transaction {
 
     /// # Errors
     /// Returns `io::Error` if an internal system transaction commit failed with one.
-    pub fn new_art_descriptor_node(&self) -> Result<u64, io::Error> {
+    pub fn new_art_descriptor_node(&self) -> Result<Id, io::Error> {
         let mut system_transaction = self.start_system_transaction();
         system_transaction.commit_new_art_descriptor_node()
     }
