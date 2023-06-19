@@ -27,7 +27,7 @@ impl From<u64> for Id {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
 struct AtomicId(AtomicU64);
 
