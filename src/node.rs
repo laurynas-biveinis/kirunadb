@@ -3,7 +3,7 @@
 
 use std::{
     fmt::{self, Display},
-    sync::atomic::AtomicU64,
+    sync::atomic::{AtomicU64, Ordering},
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -58,7 +58,7 @@ impl AtomicId {
 
     #[inline]
     pub fn get_and_advance(&mut self) -> Id {
-        let result_u64 = self.0.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let result_u64 = self.0.fetch_add(1, Ordering::Relaxed);
         let result = Id(result_u64);
         debug_assert_ne!(result, Id::NULL);
         result
