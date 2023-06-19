@@ -18,7 +18,7 @@ pub mod interface {
     extern "Rust" {
         type Transaction;
 
-        pub fn id(self: &Transaction) -> u64;
+        pub fn transaction_id(transaction: &Transaction) -> u64;
 
         pub fn new_art_descriptor_node(transaction: &mut Transaction) -> Result<u64>;
 
@@ -36,6 +36,11 @@ pub mod interface {
 
         fn begin_transaction(db: &mut Db) -> Box<Transaction>;
     }
+}
+
+#[inline]
+pub fn transaction_id(transaction: &Transaction) -> u64 {
+    transaction.id().as_u64()
 }
 
 #[inline]
