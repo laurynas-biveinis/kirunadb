@@ -14,7 +14,7 @@ use std::path::Path;
     let_underscore_drop
 )]
 pub mod interface {
-    // If cxx.rs starts supporting tuple structs, bridge NodeId directly.
+    // If cxx.rs starts supporting tuple structs, bridge node::Id and transaction::Id directly.
     extern "Rust" {
         type Transaction;
 

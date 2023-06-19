@@ -8,7 +8,6 @@ mod node;
 pub mod transaction_manager;
 
 use crate::log::Log;
-use crate::node::Id;
 use buffer_manager::BufferManager;
 use cap_std::fs::Dir;
 use cap_std::fs::OpenOptions;
@@ -31,7 +30,7 @@ pub enum DbError {
     #[error("Corruption: incorrect log record type {bad_type}")]
     BadLogRecordType { bad_type: u8 },
     #[error("Corruption: logged multiple allocations for the same node ID {node_id}")]
-    LoggedMultipleNodeIdAllocations { node_id: Id },
+    LoggedMultipleNodeIdAllocations { node_id: node::Id },
 }
 
 // Do the simplest thing that works. Later generalize to being able to contain

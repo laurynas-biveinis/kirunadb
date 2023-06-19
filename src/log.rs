@@ -1,5 +1,5 @@
 // Copyright (C) 2022-2023 Laurynas Biveinis
-use crate::{node::Id, transaction_manager::TransactionChange, DbError};
+use crate::{node, transaction_manager::TransactionChange, DbError};
 use cap_std::fs::{Dir, File, OpenOptions};
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 use std::{
@@ -11,7 +11,7 @@ use std::{
 #[must_use]
 pub struct Log {
     file: File,
-    max_logged_node_id: Id,
+    max_logged_node_id: node::Id,
 }
 
 #[derive(IntoPrimitive, TryFromPrimitive)]
@@ -66,7 +66,7 @@ impl Log {
                             std::cmp::Ordering::Greater => max_logged_node_id = node_id,
                             std::cmp::Ordering::Equal => {
                                 return Err(DbError::LoggedMultipleNodeIdAllocations {
-                                    node_id: Id::from(node_id),
+                                    node_id: node::Id::from(node_id),
                                 })
                             }
                             std::cmp::Ordering::Less => {}
@@ -78,7 +78,7 @@ impl Log {
         };
         Ok(Self {
             file,
-            max_logged_node_id: Id::from(max_logged_node_id),
+            max_logged_node_id: node::Id::from(max_logged_node_id),
         })
     }
 
@@ -103,7 +103,7 @@ impl Log {
     }
 
     #[inline]
-    pub fn max_logged_node_id(&self) -> Id {
+    pub fn max_logged_node_id(&self) -> node::Id {
         self.max_logged_node_id
     }
 }

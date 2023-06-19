@@ -47,9 +47,9 @@ impl From<u64> for Id {
 
 #[derive(Debug)]
 #[must_use]
-pub struct AtomicNodeId(AtomicU64);
+pub struct AtomicId(AtomicU64);
 
-impl AtomicNodeId {
+impl AtomicId {
     #[inline]
     pub fn new(id: Id) -> Self {
         debug_assert_ne!(id, Id::NULL);
