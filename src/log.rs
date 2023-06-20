@@ -82,22 +82,17 @@ impl Log {
         })
     }
 
-    pub fn append_change(&mut self, change: &TransactionChange) -> Result<(), io::Error> {
-        let change_type_id: u8 = ChangeId::new(change).into();
+    pub fn append(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
         // TODO(laurynas): this is throwaway code anyway. Use serde (C-SERDE)
-        match change {
-            TransactionChange::NewNode(new_art_descriptor) => {
-                self.file.write_all(&change_type_id.to_ne_bytes())?;
-                let node_id = new_art_descriptor.node_id();
-                self.file.write_all(&node_id.to_ne_bytes())?;
-            }
-        }
-        Ok(())
-    }
-
-    pub fn append_changes(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
         for change in changes {
-            self.append_change(change)?;
+            let change_type_id: u8 = ChangeId::new(change).into();
+            match change {
+                TransactionChange::NewNode(new_art_descriptor) => {
+                    self.file.write_all(&change_type_id.to_ne_bytes())?;
+                    let node_id = new_art_descriptor.node_id();
+                    self.file.write_all(&node_id.to_ne_bytes())?;
+                }
+            }
         }
         Ok(())
     }

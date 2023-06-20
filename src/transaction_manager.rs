@@ -48,12 +48,9 @@ impl AtomicId {
 #[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
 pub enum TransactionChange {
-    // Allowed only in system transactions:
     NewNode(TransactionChangeNewNode),
-    // Allowed only in user transactions:
 }
 
-// Allowed only in system transactions
 #[derive(Debug)] // COV_EXCL_LINE
 #[must_use]
 pub struct TransactionChangeNewNode {
@@ -68,36 +65,6 @@ impl TransactionChangeNewNode {
     #[inline]
     pub fn node_id(&self) -> node::Id {
         self.node_id
-    }
-}
-
-#[derive(Debug)] // COV_EXCL_LINE
-#[must_use]
-struct SystemTransaction {
-    manager: Rc<RefCell<TransactionManager>>,
-    // Let's try not having an ID until absolutely necessary.
-    // Start with a single-action system transaction as it's the most efficient. If needed, support
-    // multiple changes later.
-    change: Option<TransactionChange>,
-}
-
-impl SystemTransaction {
-    fn commit(&mut self) -> Result<(), io::Error> {
-        debug_assert!(self.change.is_some());
-        if let Some(change) = &self.change {
-            // TODO(laurynas): no need to fsync
-            self.manager.borrow_mut().log_append_change(change)?;
-        }
-        Ok(())
-    }
-
-    fn commit_new_art_descriptor_node(&mut self) -> Result<node::Id, io::Error> {
-        let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
-        let new_node_id = new_node_trx_change.node_id();
-        let trx_change = TransactionChange::NewNode(new_node_trx_change);
-        self.change = Some(trx_change);
-        self.commit()?;
-        Ok(new_node_id)
     }
 }
 
@@ -118,24 +85,18 @@ impl Transaction {
         }
     }
 
-    fn start_system_transaction(&self) -> SystemTransaction {
-        SystemTransaction {
-            manager: self.manager.clone(),
-            change: None,
-        }
-    }
-
-    /// # Errors
-    /// Returns `io::Error` if an internal system transaction commit failed with one.
-    pub fn new_art_descriptor_node(&self) -> Result<node::Id, io::Error> {
-        let mut system_transaction = self.start_system_transaction();
-        system_transaction.commit_new_art_descriptor_node()
-    }
-
     /// # Errors
     /// Will return `io::Error` if it encounters any.
     pub fn commit(&mut self) -> Result<(), io::Error> {
-        self.manager.borrow_mut().log_append_changes(&self.changes)
+        self.manager.borrow_mut().log_append(&self.changes)
+    }
+
+    pub fn new_art_descriptor_node(&mut self) -> node::Id {
+        let new_node_trx_change = self.manager.borrow_mut().new_art_descriptor_node();
+        let new_node_id = new_node_trx_change.node_id();
+        let trx_change = TransactionChange::NewNode(new_node_trx_change);
+        self.changes.push(trx_change);
+        new_node_id
     }
 
     #[inline]
@@ -171,11 +132,7 @@ impl TransactionManager {
         TransactionChangeNewNode::new(new_node_id)
     }
 
-    fn log_append_change(&mut self, change: &TransactionChange) -> Result<(), io::Error> {
-        self.log.append_change(change)
-    }
-
-    fn log_append_changes(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
-        self.log.append_changes(changes)
+    fn log_append(&mut self, changes: &Vec<TransactionChange>) -> Result<(), io::Error> {
+        self.log.append(changes)
     }
 }

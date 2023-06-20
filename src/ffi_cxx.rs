@@ -1,7 +1,6 @@
 // Copyright (C) 2022-2023 Laurynas Biveinis
 use crate::transaction_manager::Transaction;
 use crate::{Db, DbError};
-use std::io;
 use std::path::Path;
 
 #[cxx::bridge(namespace = "kirunadb")]
@@ -9,7 +8,6 @@ use std::path::Path;
     clippy::items_after_statements,
     clippy::let_underscore_untyped,
     clippy::trait_duplication_in_bounds,
-    clippy::unnecessary_box_returns,
     clippy::used_underscore_binding,
     let_underscore_drop
 )]
@@ -20,7 +18,7 @@ pub mod interface {
 
         pub fn transaction_id(transaction: &Transaction) -> u64;
 
-        pub fn new_art_descriptor_node(transaction: &mut Transaction) -> Result<u64>;
+        pub fn new_art_descriptor_node(transaction: &mut Transaction) -> u64;
 
         // Assuming pessimistic locking so that a failure to commit is
         // exceptional
@@ -34,6 +32,7 @@ pub mod interface {
 
         pub fn close(db: Box<Db>);
 
+        #[allow(clippy::unnecessary_box_returns)]
         fn begin_transaction(db: &mut Db) -> Box<Transaction>;
     }
 }
@@ -44,9 +43,8 @@ pub fn transaction_id(transaction: &Transaction) -> u64 {
 }
 
 #[inline]
-pub fn new_art_descriptor_node(transaction: &mut Transaction) -> Result<u64, io::Error> {
-    let node_id = transaction.new_art_descriptor_node()?;
-    Ok(node_id.as_u64())
+pub fn new_art_descriptor_node(transaction: &mut Transaction) -> u64 {
+    transaction.new_art_descriptor_node().as_u64()
 }
 
 #[allow(clippy::unnecessary_box_returns)]
