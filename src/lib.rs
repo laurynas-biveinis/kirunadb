@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Laurynas Biveinis
+// Copyright (C) 2022-2024 Laurynas Biveinis
 #![deny(clippy::pedantic)]
 
 mod buffer_manager;
@@ -43,8 +43,8 @@ pub struct Db {
 }
 
 impl Db {
-    const VERSION_FILE_NAME: &str = "VERSION";
-    const LOG_FILE_NAME: &str = "LOG";
+    const VERSION_FILE_NAME: &'static str = "VERSION";
+    const LOG_FILE_NAME: &'static str = "LOG";
 
     /// # Errors
     /// Will return `DbError` if it encounters any.
